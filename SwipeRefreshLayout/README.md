@@ -1,6 +1,6 @@
 # SwipeRefreshLayout 源码分析
 
-> `SwipeRefreshLayout` 是 Android Support 包中的一个控件，旨在为用户提供通用的下拉刷新体验。
+> `SwipeRefreshLayout` 是 Android Support 包中的一个控件，旨在为用户提供通用的下拉刷新体验。
 
 对于这个控件的功能和外观这里就不做过多的赘述了，我想大家肯定都用过。所以本文就直接切入正题来分析整个控件的实现了。
 
@@ -14,7 +14,7 @@
 
 Nested Scrolling 主要由两个接口和两个 Helper 类来实现。对于 Nested Scrolling 中各个类的实现分析我不打算在这篇文章中展开了，日后会再开一篇文章来讲述（*未来文章的 Placeholder*）。
 
-`SwipeRefreshLayout` 实现了两个接口：`NestedScrollingParent`、`NestedScrollingChild`，也就是说，这个控件既可以作为一个嵌套滚动容器的子视图，也可以作为嵌套滚动的容器。一般来讲，我们都会把 `RecyclerView` 塞进它里面，这样就能轻松实现下拉刷新了。然而有的时候，我们需要再将 `SwipeRefreshLayout` 塞入一个 `CoordinatorLayout` 中来实现一些更复杂的效果，由于 `CoordinatorLayout` 也是依靠 Nested Scrolling 实现的，那他就要求子视图实现 `NestedScrollingChild` 才能接收到它的滚动事件，以便于拦截处理。
+`SwipeRefreshLayout` 实现了两个接口：`NestedScrollingParent`、`NestedScrollingChild`，也就是说，这个控件既可以作为一个嵌套滚动容器的子视图，也可以作为嵌套滚动的容器。一般来讲，我们都会把 `RecyclerView` 塞进它里面，这样就能轻松实现下拉刷新了。然而有的时候，我们需要再将 `SwipeRefreshLayout` 塞入一个 `CoordinatorLayout` 中来实现一些更复杂的效果，由于 `CoordinatorLayout` 也是依靠 Nested Scrolling 实现的，那他就要求子视图实现 `NestedScrollingChild` 才能接收到它的滚动事件，以便于拦截处理。
 
 首先看它作为 Parent 部分的实现。
 
@@ -57,7 +57,7 @@ public boolean startNestedScroll(int axes) {
 }
 ```
 
-可以看到，由于 SRL 也可以作为嵌套滚动的子视图，所以这个方法的作用就是告知 SRL 的父视图，有一个可以嵌套滚动的子视图开始滚动了，那 SRL 的父视图（可能是 `CoordinatorLayout`）就可以做和 SRL 类似的准备工作了。
+可以看到，由于 SRL 也可以作为嵌套滚动的子视图，所以这个方法的作用就是告知 SRL 的父视图，有一个可以嵌套滚动的子视图开始滚动了，那 SRL 的父视图（可能是 `CoordinatorLayout`）就可以做和 SRL 类似的准备工作了。
 
 接下来就是比较重要的几个方法了，首先是 `onNestedPreScroll`，代码篇幅较长，我就把分析写进注释里了：
 ```java
@@ -79,7 +79,7 @@ public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
 
     // 到这里 consumed 的值可能被修改，如果出现上面的情况，那么这个值就不为 0，表示该滑动已经被 SRL 消费了，子视图你就别再滚动消费的那部分了。
 
-    // 这里处理了用户自定义 Spinner 位置的情况，让它在该出现的位置之前隐藏。
+    // 这里处理了用户自定义 Spinner 位置的情况，让它在该出现的位置之前隐藏。
     if (mUsingCustomStart && dy > 0 && mTotalUnconsumed == 0
             && Math.abs(dy - consumed[1]) > 0) {
         mCircleView.setVisibility(View.GONE);
@@ -94,7 +94,7 @@ public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
 }
 ```
 
-然后是 `onNestedScroll`：
+然后是 `onNestedScroll`：
 ```java
 @Override
 public void onNestedScroll(final View target, final int dxConsumed, final int dyConsumed,
