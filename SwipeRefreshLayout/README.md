@@ -167,9 +167,9 @@ private void createProgressView() {
 }
 ```
 
-其中 `MaterialProgressDrawable` 就绘制了那个 **Material Design** 风格的 Spinner，它也被用于 `ProgressBar` 等控件中，而 `CircleImageView` 只是一个含圆形底图的一个 `ImageView`。后者其实没有什么值得深入分析的，因为 API level 21 之后就可以直接通过 `setElevation` 来设置视图的阴影效果了，这个类主要通过自定义绘制处理了老版本的兼容问题。
+其中 `MaterialProgressDrawable` 就绘制了那个 **Material Design** 风格的 Spinner，它也被用于 `ProgressBar` 等控件中，而 `CircleImageView` 只是一个含圆形底图的一个 `ImageView`。后者其实没有什么值得深入分析的，因为 API level 21 之后就可以直接通过 `setElevation` 来设置视图的阴影效果了，这个类主要通过自定义绘制处理了老版本的兼容问题。
 
-另一个有意思的点就是 SRL 处理动画的方式，举一个例子，`animateOffsetToCorrectPosition` 这个方法中使用到了一个名为 `mAnimateToCorrectPosition` 的 `Animation` 对象，它的定义如下：
+另一个有意思的点就是 SRL 处理动画的方式，举一个例子，`animateOffsetToCorrectPosition` 这个方法中使用到了一个名为 `mAnimateToCorrectPosition` 的 `Animation` 对象，它的定义如下：
 ```java
 private final Animation mAnimateToCorrectPosition = new Animation() {
     @Override
@@ -278,6 +278,6 @@ protected int getChildDrawingOrder(int childCount, int i) {
 | 2 | 1 |
 | 3 | 2 |
 
-在 SRL 中，最后绘制的视图始终是 Spinner，所以当 `i == childCount - 1` 的时候，就直接返回 Spinner 视图的 index，但其它的视图顺序也需要处理，所以如果当正在绘制的不是最后一个视图，然而 Spinner 却出现了，那就需要跳过 Spinner，先绘制下一个视图，也就是第 `i + 1` 个视图；对于 Spinner 之前的视图就采用默认顺序就可以了。这块可能比较抽象，大家列列表格就能推出来了。
+在 SRL 中，最后绘制的视图始终是 Spinner，所以当 `i == childCount - 1` 的时候，就直接返回 Spinner 视图的 index，但其它的视图顺序也需要处理，所以如果当正在绘制的不是最后一个视图，然而 Spinner 却出现了，那就需要跳过 Spinner，先绘制下一个视图，也就是第 `i + 1` 个视图；对于 Spinner 之前的视图就采用默认顺序就可以了。这块可能比较抽象，大家列列表格就能推出来了。
 
 到这里我们基本就分析完 SRL 里面几个比较核心的方法了，其它的细节本文就不再赘述了，相信大家通过阅读源码都能理解。
