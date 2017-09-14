@@ -30,6 +30,11 @@ public class DiskLruCacheTest {
         mCache = DiskLruCache.open(cacheDir, 1, 1, 6);
     }
 
+    @After
+    public void close() throws Exception {
+        mCache.close();
+    }
+
     @Test
     public void addEntries() throws Exception {
         DiskLruCache.Editor editor = mCache.edit("1");
@@ -44,8 +49,19 @@ public class DiskLruCacheTest {
         assertTrue(inflateStream(editor.newOutputStream(0), "Baz"));
         editor.abort();
 
-        assertEquals("Foo", mCache.get("1").getString(0));
-        assertEquals("Bar", mCache.get("2").getString(0));
+        // Sleep for 1s to wait cleanup to be done.
+        Thread.sleep(1000);
+
+        DiskLruCache.Snapshot snapshot = mCache.get("1");
+        assertNotNull(snapshot);
+        assertEquals("Foo", snapshot.getString(0));
+        snapshot.close();
+
+        snapshot = mCache.get("2");
+        assertNotNull(snapshot);
+        assertEquals("Bar", snapshot.getString(0));
+        snapshot.close();
+
         assertNull(mCache.get("3"));
     }
 
@@ -71,9 +87,16 @@ public class DiskLruCacheTest {
         Thread.sleep(1000);
 
         // Then least recently used item should be removed.
-        assertNotNull(mCache.get("1"));
-        assertNull(mCache.get("2"));
-        assertNotNull(mCache.get("3"));
+        DiskLruCache.Snapshot snapshot = mCache.get("1");
+        assertNotNull(snapshot);
+        snapshot.close();
+
+        snapshot = mCache.get("2");
+        assertNull(snapshot);
+
+        snapshot = mCache.get("3");
+        assertNotNull(snapshot);
+        snapshot.close();
     }
 
     private boolean inflateStream(OutputStream stream, String content) {
