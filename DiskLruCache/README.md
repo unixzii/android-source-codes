@@ -167,7 +167,7 @@ private synchronized Editor edit(String key, long expectedSequenceNumber) throws
 `Editor` 对象提供了几个基本方法来操作一个缓存条目：
 
 * `newInputStream(int)`: 获取此条目的一个输入流，它会创建一个基于 **clean file** 的一个 `FileInputStream`，因此没有被 **commit** 的脏数据不会被读取。通常，读取缓存数据时我们不使用这个方法。
-* `newOutputStream(int)`: 获取此条目的一个输出流，类上上面的方法，只不过它基于的是一个临时文件（**dirty file**），只有被 **commit** 后才会变为 **clean file**。另外值得注意的是，它返回的并非 `FileOutputStream`，而是 `FaultHidingOutputStream`（`FilterOutputStream` 派生类），它会 suppress 并记录所有 IO 错误，在 **commit** 时如果发现之前有 IO 错误发生，则会自动 **abort** 掉此次编辑操作，以保证原有数据不会损坏。
+* `newOutputStream(int)`: 获取此条目的一个输出流，类上上面的方法，只不过它基于的是一个临时文件（**dirty file**），只有被 **commit** 后才会变为 **clean file**。另外值得注意的是，它返回的并非 `FileOutputStream`，而是 `FaultHidingOutputStream`（`FilterOutputStream` 派生类），它会 suppress 并记录所有 IO 错误，在 **commit** 时如果发现之前有 IO 错误发生，则会自动 **abort** 掉此次编辑操作，以保证原有数据不会损坏。
 * `commit()` 和 `abort()`: 结束编辑操作，前者是提交更改，后者为放弃编辑的内容，还原之前的状态。
 
 我们主要看一下结束编辑状态的实现逻辑，它由 `DiskLruCache#completeEdit(Editor, boolean)` （由 `commit()` 和 `abort()` 调用）实现：
