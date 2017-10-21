@@ -8,7 +8,7 @@ A repo maintained by Cyandev
 * [**DiskLruCache 实现分析**](https://github.com/unixzii/android-source-codes/tree/master/DiskLruCache) (更新于 9.14 14:10)
 
 ### Tips & Tricks
-Coming soon...
+* [**使用自定义动画实现 ImageView 的神奇移动效果**](https://github.com/unixzii/android-source-codes/tree/master/ImageMagicMove) (更新于 10.21 17:31)
 
 ## Contributing
 本项目欢迎大家投稿，撰写格式请参考之前的文章。提交 PR 时请不要修改本 README 中的目录，谢谢合作。
