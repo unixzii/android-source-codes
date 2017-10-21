@@ -28,10 +28,7 @@ public class ImageTransitionActivity extends AppCompatActivity {
             new Property<View, Rect>(Rect.class, "bounds") {
                 @Override
                 public void set(View object, Rect value) {
-                    object.setLeft(value.left);
-                    object.setTop(value.top);
-                    object.setRight(value.right);
-                    object.setBottom(value.bottom);
+                    object.layout(value.left, value.top, value.right, value.bottom);
                 }
 
                 @Override
@@ -120,12 +117,17 @@ public class ImageTransitionActivity extends AppCompatActivity {
     }
 
     private void createAnimator(final boolean in) {
-        int[] origin = new int[2];
-        mThumbnailImageView.getLocationInWindow(origin);
+        int[] thumbnailOrigin = new int[2];
+        int[] fullOrigin = new int[2];
+        mThumbnailImageView.getLocationInWindow(thumbnailOrigin);
+        mFullImageView.getLocationInWindow(fullOrigin);
 
-        Rect thumbnailBounds = new Rect(origin[0], origin[1],
-                origin[0] + mThumbnailImageView.getWidth(),
-                origin[1] + mThumbnailImageView.getHeight());
+        int thumbnailLeft = mFullImageView.getLeft() + (thumbnailOrigin[0] - fullOrigin[0]);
+        int thumbnailTop = mFullImageView.getTop() + (thumbnailOrigin[1] - fullOrigin[1]);
+
+        Rect thumbnailBounds = new Rect(thumbnailLeft, thumbnailTop,
+                thumbnailLeft + mThumbnailImageView.getWidth(),
+                thumbnailTop + mThumbnailImageView.getHeight());
         Rect fullBounds = new Rect(mFullImageView.getLeft(), mFullImageView.getTop(),
                 mFullImageView.getRight(), mFullImageView.getBottom());
 
@@ -136,6 +138,7 @@ public class ImageTransitionActivity extends AppCompatActivity {
                 new RectF(0, 0, fullBounds.width(), fullBounds.height()),
                 Matrix.ScaleToFit.CENTER);
 
+        // Temporarily uses `MATRIX` type, because we want to animate the matrix by ourselves.
         mFullImageView.setScaleType(ImageView.ScaleType.MATRIX);
         mFullImageView.setImageMatrix(in ? thumbnailMatrix : fullMatrix);
         mFullImageView.post(new Runnable() {
@@ -165,6 +168,8 @@ public class ImageTransitionActivity extends AppCompatActivity {
                     mThumbnailImageView.setVisibility(View.VISIBLE);
                 }
                 mFullImageView.requestLayout();
+                // Animation is finished, reset the scale type to `FIT_CENTER`, which looks the same
+                // as the end state.
                 mFullImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             }
         };
