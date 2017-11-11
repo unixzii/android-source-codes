@@ -1,6 +1,9 @@
 A repo maintained by Cyandev
 # Android 常见项目源码分析
 
+**2017 11.11 Update**<br>
+**OkHttp 拆轮子系列文章目前处于 WIP 阶段，欢迎大家[试读](https://github.com/unixzii/android-source-codes/tree/okhttp/OkHttp)。**
+
 ## Table of contents
 ### 源码分析
 * [**SwipeRefreshLayout 源码分析**](https://github.com/unixzii/android-source-codes/tree/master/SwipeRefreshLayout) (更新于 6.16 17:06)
